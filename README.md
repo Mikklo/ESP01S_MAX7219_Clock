@@ -2,6 +2,9 @@
 
 This project realizes a NTP controlled matrix clock (4 elements)
 
+![Example Clock](Fotos/DSCN0097_small.JPG "Example Clock")
+
+
 ## Code
 
 The Code is intended to be used in the the Arduino Code Environment. However, you have to install 
