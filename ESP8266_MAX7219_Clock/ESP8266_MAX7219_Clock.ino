@@ -1,4 +1,6 @@
 
+// Network controlles matrix clock based on MAX7219 matrix display and ESP8266 
+
 // inspired by other Projects:
 // https://www.hackster.io/M-V-P/arduino-nano-clock-with-4x64-led-matrix-new-version-409730   from 2021 October 24th
 
@@ -9,14 +11,16 @@
 #include <time.h>
 #include "Font_Data.h"
 
-//#define BLINK   // Blinking 1Hz HH MM Separator
-#define DELETE_LEADING_NULL // delets leading "0" in case of hour < 10 
-//#define DEBUG   // Enalbe Debug output via serial
-
+// User defined clock behaviour
+//#define BLINK   // blinking 1Hz HH MM separator
+#define DELETE_LEADING_NULL // delets leading "0" in case of hour < 10
 
 // WiFi login parameters - network name and password
 const char* ssid = "Your WiFI SSID";
 const char* password = "Your WiFi Password";
+
+
+
 
 
 // MAX7219 Config
@@ -43,15 +47,16 @@ uint8_t separator=16; // HH MM separator position
 const byte SPACER = 1;
 byte FONT_WIDTH = 5 + SPACER;
 
+//#define DEBUG   // Enalbe Debug output via serial
 #define PRINT(s, v) { Serial.print(F(s)); Serial.print(v); }
 
 
 
 /*! \fn void printText(uint8_t modStart, uint8_t modEnd, char *pMsg)
-    \brief Send String to Matrix Display 
-    \param uint8_t modStart Start Module Number
-    \param uint8_t modEnd Last Module
-    \param char *pMsg Message 
+    \brief send string to matrix display 
+    \param uint8_t modStart start Mmdule number
+    \param uint8_t modEnd last module
+    \param char *pMsg message 
     */
 void printText(uint8_t modStart, uint8_t modEnd, char *pMsg)
 // Print the text string to the LED matrix modules specified.
@@ -162,7 +167,7 @@ void initNTP() {
 
 
 /*! \fn void initDisplay()
-    \brief Initialization of Matrix Display 
+    \brief Initialization of matrix display 
    
 */
 void initDisplay() {
@@ -192,7 +197,7 @@ void setup() {
 
 
 /*! \fn void getTime()
-    \brief read Time and create 'display_msg' String
+    \brief read Time and create 'display_msg' string
    
 */
 void getTime()
@@ -208,21 +213,19 @@ void getTime()
   String shour=time.substring(11,13);    // hour
   hour=shour.toInt();
 
+  // elimate leading "0" four hour < 10 (if enabled)
   #ifdef DELETE_LEADING_NULL
-    // elimate leading "0" four hour < 10
     if (hour <= 9) {
-        shour = "~" + String(hour);  // "~" in font change to empty space
+        shour = "~" + String(hour);  // "~" in font changed to empty space
      }
   #endif
   
   String sminutes=time.substring(14,16); //minutes
   minutes=sminutes.toInt();
 
-  //String msg=String(hour);              // Extract h 10
   String msg=String(" ");
   msg.concat(shour);
-  //msg.concat(":");                    // add : 
-  msg.concat(char(124));              // add 1 full column between numbers
+  msg.concat(char(124));    // add 1 full column between numbers
   msg.concat(sminutes);     // add mm
   msg.toCharArray(display_msg,BUF_SIZE);
 
@@ -237,18 +240,17 @@ void getTime()
    
 */
 void loop() {
-  getTime();  // read time from NTP server (every hour)
+  getTime();  // read time from NTP server (every hour per default)
   printText(0,MAX_DEVICES-1,display_msg); // show time on display
-  //mx.setColumn(MAX_DEVICES*8-separator,0); // Clear the |
   mx.setColumn(MAX_DEVICES*8-separator,36); 
 
-  // blink // Blinking two separator: 
+  // blink sequence 
   #ifdef BLINK
     delay(1000);
     mx.setColumn(MAX_DEVICES*8-separator,0);
     delay(1000);
   #else
-    // not blinking
+    // set to not not blinking
     delay(2000);
   #endif
 }
