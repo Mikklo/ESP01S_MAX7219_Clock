@@ -19,8 +19,12 @@
 const char* ssid = "Your WiFI SSID";
 const char* password = "Your WiFi Password";
 
-
-
+// NTP parameters
+// Berlin, Paris, Amsterdam
+// see: https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+#define NTP_ENV "TZ", "CET-1CEST,M3.5.0,M10.5.0/3"
+#define NTP_SERVER_1 "pool.ntp.org"
+#define NTP_SERVER_2 "time.nist.gov"
 
 
 // MAX7219 Config
@@ -29,6 +33,7 @@ const char* password = "Your WiFi Password";
 #define MAX_DEVICES 4
 #define USE_LOCAL_FONT 1
 #define CHAR_SPACING  1 // pixels between characters
+#define DISPLAY_INTENSITY 0
 //
 #define CLK_PIN   D5 // or SCK
 #define DATA_PIN  D7 // or MOSI
@@ -155,9 +160,8 @@ void initWiFi() {
    
 */
 void initNTP() {
-  configTime(0 * 3600, 0, "pool.ntp.org", "time.nist.gov");
-  //setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02",1);
-  setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 3);   // Berlin, Paris, Amsterdam
+  configTime(0 * 3600, 0, NTP_SERVER_1, NTP_SERVER_2);
+  setenv(NTP_ENV, 3);   
   Serial.println("Waiting for time");
   while (!time(nullptr)) {
     Serial.print(".");
@@ -173,7 +177,7 @@ void initNTP() {
 void initDisplay() {
   mx.begin();
   mx.clear();
-  mx.control(MD_MAX72XX::INTENSITY, 0); // intensity setup
+  mx.control(MD_MAX72XX::INTENSITY, DISPLAY_INTENSITY); // intensity setup
   // modified SysFont (number 1 is 5 columns in width and '|' is single, empty column, "~" in font change to empty space)
   mx.setFont(modSysFont);  
 }
