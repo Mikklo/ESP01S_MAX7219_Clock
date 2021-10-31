@@ -19,6 +19,7 @@ There are some Basic configuration parts rigth at the beginning of the code:
 * Blink: Constant blinking of the HH and MM separator sign ":" can be defined
 * Leading 0: Define if a leading "0" will be shown if the hour is < 10. 
 * WiFi parameters: SSID and Password of the local WiFi
+* NTP parameters: TimeZone and NTP server definition
 
 
 ### Matrix Display configuration
@@ -32,9 +33,7 @@ The PIn configuration for the matrix display is shown in the code and per defaul
 | D8 | Chip Select |    
 
 
-### NTP configuration
 
-The NTP server and time zone is configured in the function "initNTP()" and per default set to "Berlin, Paris, Amsterdam" with automatic daylight saving switch. 
 
 ### Font
 
