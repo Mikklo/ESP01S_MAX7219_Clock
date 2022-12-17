@@ -12,12 +12,12 @@
 #include "Font_Data.h"
 
 // User defined clock behaviour
-//#define BLINK   // blinking 1Hz HH MM separator
-#define DELETE_LEADING_NULL // delets leading "0" in case of hour < 10
+#define BLINK   // blinking 1Hz HH MM separator
+//#define DELETE_LEADING_NULL // delets leading "0" in case of hour < 10
 
 // WiFi login parameters - network name and password
-const char* ssid = "Your WiFI SSID";
-const char* password = "Your WiFi Password";
+const char* ssid = "******";
+const char* password = "******";
 
 // NTP parameters
 // Berlin, Paris, Amsterdam
@@ -35,9 +35,9 @@ const char* password = "Your WiFi Password";
 #define CHAR_SPACING  1 // pixels between characters
 #define DISPLAY_INTENSITY 0
 //
-#define CLK_PIN   D5 // or SCK
-#define DATA_PIN  D7 // or MOSI
-#define CS_PIN    D8 // or SS
+#define CLK_PIN   0 // or SCK
+#define DATA_PIN  2 // or MOSI
+#define CS_PIN    1 // or SS
 //
 //MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
@@ -123,6 +123,7 @@ void printText(uint8_t modStart, uint8_t modEnd, char *pMsg)
     }
   } while (col >= (modStart * COL_SIZE));
 
+  mx.transform(MD_MAX72XX::TFUD); // flip upside down -- for heads up display
   mx.control(modStart, modEnd, MD_MAX72XX::UPDATE, MD_MAX72XX::ON);
 }
 
